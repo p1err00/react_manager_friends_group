@@ -7,26 +7,24 @@ import { List } from "../../atoms/List/list_activity";
 import ModalAddActivity from "../../mollecules/modals/modal_activity/add_activity";
 import useModalAdd from "../../hooks/useModalAddActivity";
 import { useSelector, useDispatch } from "react-redux";
-import {addActivite} from "../../../store/index"
-
+import { addActivite } from "../../../store/index"
 
 
 export const Activity = ({ ...props }) => {
 
-	const { backgroundColor, size } = props;
 	const [items_activity, setState] = useState();
 	const { isShowingAddActivity, toggleAdd } = useModalAdd();
-	const [ activity, setActivity ] = useState();
+	const [activity, setActivity] = useState();
 
 	const addActivity = () => {
 		setActivity(activity)
 	}
-	
+
 	const activitiesSlice = useSelector((state) => {
 		return state.activities
 	});
-	
-	useEffect(() => {	
+
+	useEffect(() => {
 		// fetch data
 		const dataFetch = async () => {
 			const items_activity = await (
@@ -47,14 +45,22 @@ export const Activity = ({ ...props }) => {
 		<div id="activity">
 			<Container
 				direction={"column"}
-				backgroundColor="green"
+				backgroundColor="#e0f3ec"
 				padding="20"
 				margin="20"
 			>
 				<Title
 					title="Activites"
 				></Title>
-				<Text 
+				<button className="modal-toggle" onClick={toggleAdd}>
+					Ajouter une activité
+				</button>
+
+				<ModalAddActivity isShowingAddActivity={isShowingAddActivity} hide={toggleAdd}
+					addActivity={() => {
+						dispatch(addActivite(activity))
+					}} />
+				<Text
 					contentText={"Liste des activitiés"}
 					backgroundColor="grey"
 				></Text>
@@ -64,15 +70,8 @@ export const Activity = ({ ...props }) => {
 
 				<Container
 					direction={"row"}
-					>
-					<button className="modal-toggle" onClick={toggleAdd}>
-						Add
-					</button>
+				>
 
-					<ModalAddActivity isShowingAddActivity={isShowingAddActivity} hide={toggleAdd} 
-						addActivity={() => {
-                            dispatch(addActivite(activity))
-                        }}/>
 				</Container>
 
 			</Container>

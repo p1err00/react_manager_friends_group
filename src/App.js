@@ -8,13 +8,19 @@ import Root from './routes/root';
 import { Title } from './components/atoms/Title/Title';
 import { Activity } from './components/pages/Activity/activity';
 import ErrorPage from './components/pages/ErrorPage/error_page';
-import { Repay } from './components/pages/Repay/repay';
 import { Jackpot } from './components/pages/Jackpot/jackpot.jsx';
 import { Provider } from 'react-redux';
 import {store} from './store/index.js';
+import Login from './components/pages/Auth/Auth';
+import useToken from './components/hooks/userToken';
 
+function setToken(userToken) {
+  sessionStorage.setItem('token', JSON.stringify(userToken));
+}
 
 function App() {
+
+  const { token, setToken } = useToken();
 
   const router = createBrowserRouter([
     {
@@ -33,17 +39,17 @@ function App() {
     {
       path : "jackpot",
       element : <Jackpot />
-    },
-    {
-      path : "repay",
-      element : <Repay />
     }
   ]);
+
+  if(!token) {
+    return <Login setToken={setToken} />
+  }
 
   return (
     <div className="App">
       <Provider store={store}>
-        <Title title="Mon app"></Title>
+        <Title title="Manager"></Title>
 
         <Root></Root>
         

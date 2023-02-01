@@ -7,79 +7,78 @@ import ModalAddJackpot from "../../mollecules/modals/modal_jackpot/add_jackpot";
 import useModalAdd from "../../hooks/useModalAddJackpot";
 import ModalAddJackpotHistory from "../../mollecules/modals/modal_jackpot/jackpot_history";
 import useModalAddHistory from "../../hooks/useModalAddJackpotHistory";
+import { ErrorAlerte } from "../../atoms/alerts/errorAlert";
 
 
-export const Jackpot = ({...props}) => {
+export const Jackpot = ({ ...props }) => {
 
-    const [ items_jackpot, setState ] = useState([]);
-    const [ items_jackpot_history, setStateHistory ] = useState([]);
-    const { isShowingAddJackpot, toggleAdd } = useModalAdd();
-    const { isShowingAddJackpotHistory, toggleAddHistory } = useModalAddHistory();
+	const [items_jackpot, setState] = useState([]);
+	const { isShowingAddJackpot, toggleAdd } = useModalAdd();
+	const { isShowingAddJackpotHistory, toggleAddHistory } = useModalAddHistory();
 
-    useEffect(() => {
+	useEffect(() => {
 
-      const dataFetch = async () => {
-          const items_jackpot = await (
-            await fetch(
-              "https://cstp62ov.directus.app/items/jackpots"
-            )
-          ).json();
-    
-          setState(items_jackpot.data);
-          console.log(items_jackpot.data);
-        };
-        dataFetch();
+		const dataFetch = async () => {
+			const items_jackpot = await (
+				await fetch(
+					"https://cstp62ov.directus.app/items/jackpots"
+				)
+			).json();
 
-        const getMoneyByJackpot = async () => {
-            const items_jackpot_history = await (
-              // Get item jackpot_history by id_jackpot 
-              await fetch(
-                `https://cstp62ov.directus.app/items/jackpot_history`
-              )
-            ).json();
-            setStateHistory(items_jackpot_history.data)
-          console.log(items_jackpot_history.data);
-        };
-        getMoneyByJackpot()
-      }, []);
+			setState(items_jackpot.data);
+		};
+		dataFetch();
 
-    return (
-      <div className="jackpot" id="jackpot">
-        <Container
-          direction={"column"}
-          backgroundColor="yellow"
-          padding="20"
-        >
-          <Title title="Cagnottes"></Title>
-          <Text contentText={"Liste des cagnottes"}></Text>
+	}, []);
 
-          <List
-            items={items_jackpot}
-          ></List>
+	return (
+		<div className="jackpot" id="jackpot">
+			<ErrorAlerte></ErrorAlerte>
+			<Container
+				direction={"column"}
+				backgroundColor="#cfecf0"
+				padding="20"
+				margin="20"
+			>
+				<Title title="Cagnottes"></Title>
+				<button className="modal-toggle" onClick={toggleAdd}>
+					Ajouter une cagnotte
+				</button>
+				<ModalAddJackpot isShowingAddJackpot={isShowingAddJackpot} hide={toggleAdd} />
 
-          <Container
-            direction={"row"}
-          >
-            <button className="modal-toggle" onClick={toggleAdd}>
-              Add
-            </button>
-            <ModalAddJackpot isShowingAddJackpot={isShowingAddJackpot} hide={toggleAdd} />
-            
-            <button className="modal-toggle" onClick={toggleAddHistory}>
-              Set money
-            </button>
-            <ModalAddJackpotHistory isShowingAddJackpotHistory={isShowingAddJackpotHistory} hide={toggleAddHistory} jackpots={items_jackpot}/>
-            
-          </Container>
+				<Text contentText={"Liste des cagnottes"}></Text>
 
-        </Container>
+				<List
+					items={items_jackpot}
+				></List>
 
-        <style jsx="true">{`
-          .jackpot {
-          }
+				<Container
+					direction={"row"}
+				>
+					<button className="modal-toggle" onClick={toggleAddHistory}>
+						Donner de la moula
+					</button>
+					<ModalAddJackpotHistory isShowingAddJackpotHistory={isShowingAddJackpotHistory} hide={toggleAddHistory} jackpots={items_jackpot} />
+
+				</Container>
+
+			</Container>
+
+			<style jsx="true">{`
+          .modal-toggle {
+			background-color: turquoise;
+			cursor: pointer;
+			padding: 1rem 2rem;
+			margin: 10px;
+			text-transform: uppercase;
+			border: none;
+			height:5vh;
+			bottom: 0;
+			border-radius: 15px;
+		}
         `}
-        </style>
-      </div>
-    )
+			</style>
+		</div>
+	)
 }
 

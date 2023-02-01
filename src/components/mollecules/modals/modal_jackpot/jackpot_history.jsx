@@ -1,14 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 const ModalAddJackpotHistory = ({ jackpots, isShowingAddJackpotHistory, hide }) => {
+
+	const [users, setState] = useState([]);
+
+    useEffect(() => {
+
+        const dataFetch = async () => {
+			const users = await (
+				await fetch(
+					"https://cstp62ov.directus.app/items/user"
+				)
+			).json();
+
+            setState(users.data);
+		};
+		dataFetch();
+	}, []);
     
     const handleSubmit = (event) => {
         
         let post_repay_item = {};
         event.preventDefault();
 
-        post_repay_item.title = event.target.elements.jackpot_id.value;
+        post_repay_item.id_jackpot = event.target.elements.jackpot_id.value;
         post_repay_item.amount = event.target.elements.amount.value;
         post_repay_item.setBy = event.target.elements.setBy.value;
 
@@ -20,7 +36,7 @@ const ModalAddJackpotHistory = ({ jackpots, isShowingAddJackpotHistory, hide }) 
 			let raw = JSON.stringify({
 				"amount": post_repay_item.amount,
 				"id_jackpot": post_repay_item.id_jackpot,
-				"setBy": post_repay_item.setBy
+				"set_by": post_repay_item.setBy
 			});
 
 			let requestOptions = {
@@ -58,6 +74,7 @@ const ModalAddJackpotHistory = ({ jackpots, isShowingAddJackpotHistory, hide }) 
                                 </div>
                                 <div className="modal-body">
                                     <form onSubmit={handleSubmit}>
+                                    <label htmlFor="setBy">Jackpot</label>
                                         <select id="jackpot_id">
                                             {jackpots.map((value, index) => {
                                                 return <option key={index} value={value.id}>{value.title}</option>
@@ -67,6 +84,14 @@ const ModalAddJackpotHistory = ({ jackpots, isShowingAddJackpotHistory, hide }) 
                                             <label htmlFor="">Montant</label>
                                             <input type="number" id="amount"/>
                                         </div>
+                                        <div className="form-group">
+                                        <label htmlFor="setBy">Donneur</label>
+                                            <select id="setBy">
+                                                {users.map((value, index) => {
+                                                    return <option key={index} value={value.name}>{value.name}</option>
+                                                })}
+                                            </select>
+                                        </div>
                                         <button type="submit">Envoyer</button>
                                     </form>
                                 </div>
@@ -75,59 +100,59 @@ const ModalAddJackpotHistory = ({ jackpots, isShowingAddJackpotHistory, hide }) 
                     </div>
 
                     <style jsx="true">{`
-            .modal-overlay {
-              position: fixed;
-              top: 0;
-              left: 0;
-              width: 100vw;
-              height: 100vh;
-              z-index: 1040;
-              background-color: rgba(0, 0, 0, 0.5);
-            }
+                        .modal-overlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100vw;
+                        height: 100vh;
+                        z-index: 1040;
+                        background-color: rgba(0, 0, 0, 0.5);
+                        }
 
-            .modal-wrapper {
-              position: fixed;
-              top: 0;
-              left: 0;
-              z-index: 1050;
-              width: 100%;
-              height: 100%;
-              overflow-x: hidden;
-              overflow-y: auto;
-              outline: 0;
-              display: flex;
-              align-items: center;
-            }
+                        .modal-wrapper {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        z-index: 1050;
+                        width: 100%;
+                        height: 100%;
+                        overflow-x: hidden;
+                        overflow-y: auto;
+                        outline: 0;
+                        display: flex;
+                        align-items: center;
+                        }
 
-            .modal {
-              z-index: 100;
-              background: #fff;
-              position: relative;
-              margin: auto;
-              border-radius: 5px;
-              max-width: 500px;
-              width: 80%;
-              padding: 1rem;
-            }
+                        .modal {
+                        z-index: 100;
+                        background: #fff;
+                        position: relative;
+                        margin: auto;
+                        border-radius: 5px;
+                        max-width: 500px;
+                        width: 80%;
+                        padding: 1rem;
+                        }
 
-            .modal-header {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            }
+                        .modal-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        }
 
-            .modal-close-button {
-              font-size: 1.4rem;
-              font-weight: 700;
-              color: #000;
-              cursor: pointer;
-              border: none;
-              background: transparent;
-            }
-            .form-group {
-                margin-top: 10px;
-              }
-          `}</style>
+                        .modal-close-button {
+                        font-size: 1.4rem;
+                        font-weight: 700;
+                        color: #000;
+                        cursor: pointer;
+                        border: none;
+                        background: transparent;
+                        }
+                        .form-group {
+                            margin-top: 10px;
+                        }
+                    `}</style>
                 </>,
                 document.body
             )

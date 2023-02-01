@@ -1,13 +1,10 @@
-import ModalEditActivity from "../../mollecules/modals/modal_activity/edit_activity";
-import useModalEdit from "../../hooks/useModalEditJackpot";
 import { useState } from "react";
 
 
 export const List = ({...props}) => {
 
-	const { isShowingEditActivity, toggleEdit } = useModalEdit();
-    const [ idRemove, setIdRemove ] = useState(0);
-    const { items } = props;
+    const [ idRemove, setIdRemove ]         = useState(0);
+    const { items }                         = props;
 
     const handleSubmit = (id) => {
 
@@ -32,26 +29,25 @@ export const List = ({...props}) => {
         dataFetch();
     };
     
-    
     const listItem = items?.data.map( (item) => {
-        return <li key={item.id} className="item-list">
-
-                <div>
+        return <div key={item.id} className="item-card">
+                <h2 className="item-card-title">
                     { item.title } 
+                </h2>
+                <div className="item-card-text">
                     <div>
-                        { new Date(item.date_start).getDate().toString() }-{ new Date(item.date_end).getMonth().toString() }
+                        <p>
+                            { new Date(item.date_start).getDate().toString() }/{ new Date(item.date_start).getMonth().toString() }
+                        </p>
+                        <p>
+                            { new Date(item.date_end).getDate().toString() }/{ new Date(item.date_end).getMonth().toString() }
+                        </p>
                     </div>
                 </div>
-                <div>
-                    <ModalEditActivity isShowingEditActivity={isShowingEditActivity} hide={toggleEdit} activity={item}/>
+                <div className="item-card-button">
+                    <button type="button" className="button-delete" onClick={() => handleSubmit(item.id)}>X</button>
                 </div>
-                <button className="" onClick={toggleEdit}>
-                    Edit
-                </button>
-                <div>
-                    <button type="button" onClick={() => handleSubmit(item.id)}>X</button>
-                </div>
-            </li>
+            </div>
     })
 
     return (
@@ -69,10 +65,39 @@ export const List = ({...props}) => {
                     border-radius: 10px;
                 }
                 
-                .item-list {
+                .item-card {
+                    width: 100%;
                     display: flex;
-                    flex-direciton: row;
-                    justify-content: space-evenly
+                    border: 1px dotted grey;
+                    border-radius: 10px;
+                    margin: 5px;
+                }
+
+                .item-card-title {
+                    width: 20%;
+                    border-right: 2px solid black;
+                }
+
+                .item-card-text {
+                    width: 40%;
+                    margin: auto;
+                    border-right: 2px solid black;
+                }
+
+                button {
+                    padding: 5px;
+                }
+
+                .item-card-button {
+                    width: 40%;
+                    margin: auto;
+                }
+
+                .button-delete{
+                    background-color: #fe2424;
+                    border: 0;
+                    padding: 7px;
+                    border-radius: 5px;
                 }
             `}</style>
         </div>
